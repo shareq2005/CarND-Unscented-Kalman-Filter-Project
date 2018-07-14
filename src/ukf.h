@@ -27,10 +27,10 @@ public:
 
   ///* state covariance matrix
   MatrixXd P_;
-
+  
   ///* predicted sigma points matrix
   MatrixXd Xsig_pred_;
-
+  
   ///* time when the state is true, in us
   long long time_us_;
 
@@ -67,7 +67,12 @@ public:
   ///* Sigma point spreading parameter
   double lambda_;
 
-
+  ///* Radar measurement noise covariance matrix
+  MatrixXd R_radar_;
+  
+  ///* Lidar measurment noise covariance matrix
+  MatrixXd R_laser_;
+  
   /**
    * Constructor
    */
@@ -102,6 +107,32 @@ public:
    * @param meas_package The measurement at k+1
    */
   void UpdateRadar(MeasurementPackage meas_package);
+
+private:
+  /**
+   * Initialize
+   */
+  void Init(const MeasurementPackage& measurement_pack);
+  
+  /**
+   * Generate augmented sigma points
+   */
+  void GenerateAugmentedSigmaPoints(MatrixXd& Xsig_aug);
+
+  /**
+   * Predict sigma points
+   */
+  void PredictSigmaPoints(const MatrixXd& Xsig_aug, MatrixXd& Xsig_pred, double delta_t);
+  
+  /**
+   * Predict mean and covariance
+   */
+  void PredictMeanAndCovariance();
+
+  /**
+   * Predict Radar measurement
+   */
+  void PredictRadarMeasurement();
 };
 
 #endif /* UKF_H */
